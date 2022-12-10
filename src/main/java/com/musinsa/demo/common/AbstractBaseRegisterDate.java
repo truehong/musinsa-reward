@@ -1,4 +1,4 @@
-package com.musinsa.common;
+package com.musinsa.demo.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

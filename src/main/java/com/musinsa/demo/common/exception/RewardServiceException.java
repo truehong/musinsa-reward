@@ -1,4 +1,4 @@
-package com.musinsa.common.exception;
+package com.musinsa.demo.common.exception;
 
 import lombok.Getter;
 

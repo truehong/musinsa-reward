@@ -1,10 +1,16 @@
 package com.musinsa.demo.domain;
 
-import com.musinsa.common.exception.RewardErrorCode;
-import com.musinsa.common.exception.RewardServiceException;
+import com.musinsa.demo.common.exception.RewardErrorCode;
+import com.musinsa.demo.common.exception.RewardServiceException;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Embedded;
+import javax.persistence.OneToMany;
+import javax.persistence.GenerationType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +52,8 @@ public class Reward {
     }
 
     private void updateStock() {
-        if (stock.getRemains() <= 0) {
-            throw new RuntimeException(); // todo: exception
+        if (stock.getRemains() == 0) {
+            throw new RewardServiceException(RewardErrorCode.OUT_OF_REWARD_STOCK);
         }
         stock = stock.decrease();
     }

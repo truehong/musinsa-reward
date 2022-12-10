@@ -26,7 +26,7 @@ public class Stock {
     }
 
     public Stock decrease() {
-        if(remains <= 0) throw new RuntimeException();
-        return new Stock(this.getLimit(), -- remains);
+        this.remains -=  1;
+        return new Stock(this.getLimit(), remains);
     }
 }
