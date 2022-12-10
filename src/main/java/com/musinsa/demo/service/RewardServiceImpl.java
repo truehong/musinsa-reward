@@ -4,7 +4,7 @@ import com.musinsa.demo.domain.Point;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
-import com.musinsa.demo.dto.RewardResponseDto;
+import com.musinsa.dto.response.RewardResponseDto;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

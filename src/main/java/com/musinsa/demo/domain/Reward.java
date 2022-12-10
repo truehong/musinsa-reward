@@ -1,5 +1,7 @@
 package com.musinsa.demo.domain;
 
+import com.musinsa.common.exception.RewardErrorCode;
+import com.musinsa.common.exception.RewardServiceException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -53,6 +55,6 @@ public class Reward {
     public void checkDuplication(User user) {
         boolean HistoryExists = histories.stream()
                 .anyMatch(v -> v.getUser() == user && LocalDate.now().equals(v.getRegisterDate()));
-        if (HistoryExists) throw new RuntimeException();
+        if (HistoryExists) throw new RewardServiceException(RewardErrorCode.USER_DUPLICATE_REGISTER);
     }
 }
