@@ -1,6 +1,6 @@
 package com.musinsa.demo.event;
 
-import com.musinsa.dto.request.PublishedItem;
+import com.musinsa.demo.dto.request.PublishedItem;
 
 public class RewardPublishedEvent {
     PublishedItem item;

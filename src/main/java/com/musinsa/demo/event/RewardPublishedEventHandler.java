@@ -1,7 +1,7 @@
 package com.musinsa.demo.event;
 
 import com.musinsa.demo.service.RewardPublishService;
-import com.musinsa.dto.request.PublishedItem;
+import com.musinsa.demo.dto.request.PublishedItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

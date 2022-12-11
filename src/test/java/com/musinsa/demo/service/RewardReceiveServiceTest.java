@@ -2,10 +2,9 @@ package com.musinsa.demo.service;
 
 import com.musinsa.demo.common.exception.RewardErrorCode;
 import com.musinsa.demo.common.exception.RewardServiceException;
-import com.musinsa.demo.common.schedule.EventScheduler;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.User;
-import com.musinsa.dto.response.RewardResponseDto;
+import com.musinsa.demo.dto.response.RewardResponseDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

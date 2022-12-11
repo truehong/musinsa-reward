@@ -7,7 +7,7 @@ import com.musinsa.demo.domain.User;
 import com.musinsa.demo.repository.RewardHistoryRepository;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
-import com.musinsa.dto.response.RewardResponseDto;
+import com.musinsa.demo.dto.response.RewardResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -3,7 +3,7 @@ package com.musinsa.demo.service;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.event.Events;
-import com.musinsa.dto.request.PublishedItem;
+import com.musinsa.demo.dto.request.PublishedItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

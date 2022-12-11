@@ -1,4 +1,4 @@
-package com.musinsa.dto;
+package com.musinsa.demo.dto;
 
 public class CommonResponse <T>{
     private Integer code;

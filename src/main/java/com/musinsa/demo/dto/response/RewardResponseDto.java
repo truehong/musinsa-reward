@@ -1,4 +1,4 @@
-package com.musinsa.dto.response;
+package com.musinsa.demo.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

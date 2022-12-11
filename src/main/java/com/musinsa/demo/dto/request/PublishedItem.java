@@ -1,4 +1,4 @@
-package com.musinsa.dto.request;
+package com.musinsa.demo.dto.request;
 
 import lombok.Getter;
 
