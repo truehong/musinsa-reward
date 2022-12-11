@@ -1,8 +1,6 @@
 package com.musinsa.demo.service;
 
 import com.musinsa.demo.common.exception.RewardNotFoundException;
-import com.musinsa.demo.common.exception.ServiceNotFoundErrorType;
-import com.musinsa.demo.common.exception.ServiceNotFoundException;
 import com.musinsa.demo.common.exception.UserNotFoundException;
 import com.musinsa.demo.domain.*;
 import com.musinsa.demo.repository.RewardRepository;

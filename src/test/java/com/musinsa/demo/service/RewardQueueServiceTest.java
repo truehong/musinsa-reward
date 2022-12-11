@@ -27,9 +27,9 @@ class RewardQueueServiceTest extends AbstractRewardReceiveServiceTest {
     public void addItemTest() {
 
         //given
-        User user1 = 유저_생성("user1");
-        User user2 = 유저_생성("user2");
-        User user3 = 유저_생성("user3");
+        User user1 = 유저_생성();
+        User user2 = 유저_생성();
+        User user3 = 유저_생성();
         Reward reward = 보상_생성();
 
         // when

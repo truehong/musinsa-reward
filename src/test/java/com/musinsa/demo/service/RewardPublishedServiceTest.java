@@ -38,7 +38,7 @@ public class RewardPublishedServiceTest extends AbstractRewardReceiveServiceTest
         final int USER_COUNT = 30;
         final int LIMIT_REWARDS_COUNT = 10;
         // given
-        List<User> users = 다중_유저_생성(USER_COUNT, "user_");
+        List<User> users = 다중_유저_생성(USER_COUNT);
         Reward 테스트_보상 = 보상_생성();
 
         // when
@@ -62,8 +62,8 @@ public class RewardPublishedServiceTest extends AbstractRewardReceiveServiceTest
         final int SCHEDULER_EXECUTION_TIME = 5000;
         final int REQUEST_USER_COUNT = 2;
         // given
-        User 유저_1 = 유저_생성("user_1");
-        User 유저_2 = 유저_생성("user_2");
+        User 유저_1 = 유저_생성();
+        User 유저_2 = 유저_생성();
         Reward 테스트_보상 = 보상_생성();
 
         // when - 반복 요청 : redis set 자료형 으로 반복 요청 시에도 하나만 전달됨
