@@ -3,11 +3,12 @@ package com.musinsa.demo.service;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.event.Events;
-import com.musinsa.demo.dto.request.PublishedItem;
+import com.musinsa.demo.event.RewardPublishedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RewardQueueService {
     private static final long FIRST_ELEMENT = 0;
     private static final long PUBLISH_SIZE = 10;
@@ -32,10 +34,10 @@ public class RewardQueueService {
 
         for (Reward reward : rewards) {
             Set<Object> queue = redisTemplate.opsForZSet().range(String.valueOf(reward.getNo()), start, end);
-            for (Object userId : queue) {
-                PublishedItem publishedItem = new PublishedItem(String.valueOf(userId), reward.getNo());
+            for (Object value : queue) {
+                String userId = String.valueOf(value);
                 log.info("user reward published - {} ({} reward)", userId, reward.getNo());
-                Events.raise(publishedItem);
+                Events.raise(new RewardPublishedEvent(userId, reward.getNo()));
                 redisTemplate.opsForZSet().remove(String.valueOf(reward.getNo()), userId);
             }
         }

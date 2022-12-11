@@ -6,13 +6,13 @@ import com.musinsa.demo.service.RewardQueueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class EventScheduler {
 

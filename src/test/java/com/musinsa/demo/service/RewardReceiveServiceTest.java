@@ -18,13 +18,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
-@SpringBootTest
 @Transactional
+@SpringBootTest
 @ActiveProfiles("local")
 class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
 
     @Autowired
-    RewardPublishService rewardReceiveService;
+    RewardPublishService rewardPublishService;
 
     @Autowired
     RewardSearchService rewardSearchService;
@@ -34,10 +34,10 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
     @DisplayName("유저의 보상 등록 테스트")
     void userRewardRegisterTest() {
         // given
-        User 테스트_유저 = 유저_생성("user");
+        User 테스트_유저 = 유저_생성("user_1");
         Reward 테스트_보상 = 보상_생성();
         // when
-        rewardReceiveService.register(테스트_유저.getId(), 테스트_보상.getNo());
+        rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getNo());
         RewardResponseDto 보상_지급 = rewardSearchService.getDetails(테스트_유저.getId(), 테스트_보상.getNo());
         //then
         Assertions.assertEquals(보상_지급.getPoint(), 100);
@@ -45,38 +45,15 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
     }
 
     @Test
-    @DisplayName("유저의 보상 발행 테스트")
-    void userRewardPublishedTest() throws InterruptedException {
-        final int SCHEDULER_EXECUTION_TIME = 5000;
-        final int USER_COUNT = 30;
-        final int LIMIT_REWARDS_COUNT = 10;
-        // given
-        List<User> users = 다중_유저_생성(USER_COUNT, "user_");
-        Reward 테스트_보상 = 보상_생성();
-
-        // when
-        users.stream()
-                .forEach(v -> {
-                    rewardReceiveService.register(v.getId(), 테스트_보상.getNo());
-                });
-
-        Thread.sleep(SCHEDULER_EXECUTION_TIME);
-
-        // then
-        assertThat(테스트_보상.getHistories()
-                .stream().count()).isEqualTo(LIMIT_REWARDS_COUNT);
-    }
-
-    @Test
     @DisplayName("같은 유저가 두번 등록시 에러 발생")
     void userRewardRegisterExceptionTest() {
         // given
-        User 테스트_유저 = 유저_생성("user");
+        User 테스트_유저 = 유저_생성("user_1");
         Reward 테스트_보상 = 보상_생성();
         // when
-        rewardReceiveService.register(테스트_유저.getId(), 테스트_보상.getNo());
+        rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getNo());
 
-        Throwable 보상_지급_한번더 = catchThrowable(() -> rewardReceiveService.register(테스트_유저.getId(), 테스트_보상.getNo()));
+        Throwable 보상_지급_한번더 = catchThrowable(() -> rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getNo()));
         assertThat(보상_지급_한번더).isInstanceOf(RewardServiceException.class);
         assertThat(보상_지급_한번더).withFailMessage(RewardErrorCode.USER_DUPLICATE_REGISTER.getMessage());
     }
@@ -91,10 +68,10 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
 
         // when
         assertThat(열명의_유저들.size()).isEqualTo(10);
-        열명의_유저들.forEach(user -> rewardReceiveService.register(user.getId(), 테스트_보상.getNo()));
+        열명의_유저들.forEach(user -> rewardPublishService.register(user.getId(), 테스트_보상.getNo()));
 
         // then
-        Throwable 열한번째_보상 = catchThrowable(() -> rewardReceiveService.register(열한번째_유저.getId(), 테스트_보상.getNo()));
+        Throwable 열한번째_보상 = catchThrowable(() -> rewardPublishService.register(열한번째_유저.getId(), 테스트_보상.getNo()));
         assertThat(열한번째_보상).isInstanceOf(RewardServiceException.class);
         assertThat(열한번째_보상).withFailMessage(RewardErrorCode.OUT_OF_REWARD_STOCK.getMessage());
     }

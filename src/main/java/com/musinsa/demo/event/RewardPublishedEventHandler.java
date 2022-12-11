@@ -1,7 +1,6 @@
 package com.musinsa.demo.event;
 
 import com.musinsa.demo.service.RewardPublishService;
-import com.musinsa.demo.dto.request.PublishedItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ public class RewardPublishedEventHandler {
     private final RewardPublishService receiveService;
 
     @EventListener(RewardPublishedEvent.class)
-    public void handler(PublishedItem publishedItem) {
+    public void handler(RewardPublishedEvent publishedItem) {
         receiveService.publish(publishedItem.getUserId(), publishedItem.getRewardNo());
     }
 }

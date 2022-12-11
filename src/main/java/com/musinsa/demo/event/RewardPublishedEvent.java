@@ -1,11 +1,14 @@
 package com.musinsa.demo.event;
 
-import com.musinsa.demo.dto.request.PublishedItem;
+import lombok.Getter;
 
+@Getter
 public class RewardPublishedEvent {
-    PublishedItem item;
+    private String userId;
+    private Long rewardNo;
 
-    public RewardPublishedEvent(PublishedItem item) {
-        this.item = item;
+    public RewardPublishedEvent(String userId, Long rewardNo) {
+        this.userId = userId;
+        this.rewardNo = rewardNo;
     }
 }
