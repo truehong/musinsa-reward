@@ -1,7 +1,9 @@
 package com.musinsa.demo.service;
 
+import com.musinsa.demo.common.exception.RewardNotFoundException;
 import com.musinsa.demo.common.exception.ServiceNotFoundErrorType;
 import com.musinsa.demo.common.exception.ServiceNotFoundException;
+import com.musinsa.demo.common.exception.UserNotFoundException;
 import com.musinsa.demo.domain.*;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
@@ -25,7 +27,7 @@ public class RewardPublishServiceImpl implements RewardPublishService {
         User user = userRepository.findById(userId)
                 .orElseGet(() -> create(userId));
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.REWARD));
+                .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardNo)));
         long now = System.currentTimeMillis();
         validStocks(reward);
         reward.checkDuplication(user);
@@ -36,9 +38,9 @@ public class RewardPublishServiceImpl implements RewardPublishService {
     public void publish(String userId, Long rewardNo) {
         log.info("RewardPublishService.publish method invoked - [userid ={}, rewardNo ={}]", userId, rewardNo);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.USER));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.REWARD));
+                .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardNo)));
         if (!validStocks(reward)) return;
         Point point = pointCalculationService.calculatePointAmount(reward, user);
         RewardPublish rewardPublish = new RewardPublish(user, point);

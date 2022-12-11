@@ -37,7 +37,9 @@ public class RewardQueueService {
             for (Object value : queue) {
                 String userId = String.valueOf(value);
                 log.info("user reward published - {} ({} reward)", userId, reward.getNo());
+                log.info("user thread - {}", Thread.currentThread());
                 Events.raise(new RewardPublishedEvent(userId, reward.getNo()));
+                log.info("event after thread - {}", Thread.currentThread());
                 redisTemplate.opsForZSet().remove(String.valueOf(reward.getNo()), userId);
             }
         }
