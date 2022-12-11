@@ -1,17 +1,19 @@
 package com.musinsa.demo.service;
 
-import com.musinsa.demo.common.exception.RewardErrorCode;
-import com.musinsa.demo.common.exception.RewardServiceException;
+import com.musinsa.demo.common.exception.ServiceNotFoundErrorType;
+import com.musinsa.demo.common.exception.ServiceNotFoundException;
 import com.musinsa.demo.domain.*;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class RewardPublishServiceImpl implements RewardPublishService {
     private final RewardRepository rewardRepository;
     private final UserRepository userRepository;
@@ -23,7 +25,7 @@ public class RewardPublishServiceImpl implements RewardPublishService {
         User user = userRepository.findById(userId)
                 .orElseGet(() -> create(userId));
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(() -> new RewardServiceException(RewardErrorCode.NOT_FOUND_REWARD));
+                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.REWARD));
         long now = System.currentTimeMillis();
         validStocks(reward);
         reward.checkDuplication(user);
@@ -32,10 +34,11 @@ public class RewardPublishServiceImpl implements RewardPublishService {
 
     @Override
     public void publish(String userId, Long rewardNo) {
+        log.info("RewardPublishService.publish method invoked - [userid ={}, rewardNo ={}]", userId, rewardNo);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RewardServiceException(RewardErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.USER));
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(() -> new RewardServiceException(RewardErrorCode.NOT_FOUND_REWARD));
+                .orElseThrow(() -> new ServiceNotFoundException(ServiceNotFoundErrorType.REWARD));
         if (!validStocks(reward)) return;
         Point point = pointCalculationService.calculatePointAmount(reward, user);
         RewardPublish rewardPublish = new RewardPublish(user, point);

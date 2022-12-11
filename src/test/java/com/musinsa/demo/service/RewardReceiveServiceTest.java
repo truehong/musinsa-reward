@@ -1,6 +1,6 @@
 package com.musinsa.demo.service;
 
-import com.musinsa.demo.common.exception.RewardErrorCode;
+import com.musinsa.demo.common.exception.ServiceErrorType;
 import com.musinsa.demo.common.exception.RewardServiceException;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.User;
@@ -55,7 +55,7 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
 
         Throwable 보상_지급_한번더 = catchThrowable(() -> rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getNo()));
         assertThat(보상_지급_한번더).isInstanceOf(RewardServiceException.class);
-        assertThat(보상_지급_한번더).withFailMessage(RewardErrorCode.USER_DUPLICATE_REGISTER.getMessage());
+        assertThat(보상_지급_한번더).withFailMessage(ServiceErrorType.USER_DUPLICATE_REGISTER.getMessage());
     }
 
     @Test
@@ -73,6 +73,6 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
         // then
         Throwable 열한번째_보상 = catchThrowable(() -> rewardPublishService.register(열한번째_유저.getId(), 테스트_보상.getNo()));
         assertThat(열한번째_보상).isInstanceOf(RewardServiceException.class);
-        assertThat(열한번째_보상).withFailMessage(RewardErrorCode.OUT_OF_REWARD_STOCK.getMessage());
+        assertThat(열한번째_보상).withFailMessage(ServiceErrorType.OUT_OF_REWARD_STOCK.getMessage());
     }
 }

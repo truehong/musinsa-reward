@@ -3,6 +3,7 @@ package com.musinsa.demo.service;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.Stock;
 import com.musinsa.demo.domain.User;
+import com.musinsa.demo.repository.RewardHistoryRepository;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,15 @@ public abstract class AbstractRewardReceiveServiceTest {
 
     @Autowired
     protected RewardRepository rewardRepository;
+
+    @Autowired
+    protected RewardHistoryRepository rewardHistoryRepository;
+
+    protected void init() {
+        this.rewardHistoryRepository.deleteAll();
+        this.rewardRepository.deleteAll();
+        this.userRepository.deleteAll();
+    }
 
     protected User 유저_생성(String id) {
         User user = User.builder()

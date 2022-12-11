@@ -23,7 +23,9 @@ public class EventScheduler {
     private void rewardEventScheduler() {
         log.info("reward event scheduler executed [ at {} ] ", LocalDateTime.now());
         List<Reward> reward = rewardRepository.findAll();
-        rewardQueueService.publishAll(reward);
+        if (!reward.isEmpty()) {
+            rewardQueueService.publishAll(reward);
+        }
     }
 }
 

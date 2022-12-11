@@ -1,6 +1,6 @@
 package com.musinsa.demo.domain;
 
-import com.musinsa.demo.common.exception.RewardErrorCode;
+import com.musinsa.demo.common.exception.ServiceErrorType;
 import com.musinsa.demo.common.exception.RewardServiceException;
 import lombok.*;
 
@@ -53,7 +53,7 @@ public class Reward {
 
     private void updateStock() {
         if (stock.getRemains() == 0) {
-            throw new RewardServiceException(RewardErrorCode.OUT_OF_REWARD_STOCK);
+            throw new RewardServiceException(ServiceErrorType.OUT_OF_REWARD_STOCK);
         }
         stock = stock.decrease();
     }
@@ -61,6 +61,6 @@ public class Reward {
     public void checkDuplication(User user) {
         boolean HistoryExists = histories.stream()
                 .anyMatch(v -> v.getUser() == user && LocalDate.now().equals(v.getRegisterDate()));
-        if (HistoryExists) throw new RewardServiceException(RewardErrorCode.USER_DUPLICATE_REGISTER);
+        if (HistoryExists) throw new RewardServiceException(ServiceErrorType.USER_DUPLICATE_REGISTER);
     }
 }

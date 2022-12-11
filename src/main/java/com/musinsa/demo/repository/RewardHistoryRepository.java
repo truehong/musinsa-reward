@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface RewardHistoryRepository extends JpaRepository<RewardPublish, Long> {
     List<RewardPublish> findAllByRewardAndRegisterDateOrderByRegisterDateDesc(Reward reward, LocalDate localDate);
     Optional<RewardPublish> findTopByUserAndRewardOrderById(User user, Reward reward);
+    List<RewardPublish> findAllByRewardAndRegisterDate(Reward reward, LocalDate localDate);
 }
