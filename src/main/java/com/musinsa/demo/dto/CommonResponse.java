@@ -11,7 +11,7 @@ public class CommonResponse<T> {
     private String message;
     private T value;
 
-    protected CommonResponse(T value) {
+    public CommonResponse(T value) {
         this.status = HttpStatus.OK;
         this.value = value;
     }

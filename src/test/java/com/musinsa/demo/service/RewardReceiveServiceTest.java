@@ -38,7 +38,7 @@ class RewardReceiveServiceTest extends AbstractRewardReceiveServiceTest {
         Reward 테스트_보상 = 보상_생성();
         // when
         rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getNo());
-        RewardResponseDto 보상_지급 = rewardSearchService.getDetails(테스트_유저.getId(), 테스트_보상.getNo());
+        RewardResponseDto 보상_지급 = rewardSearchService.getDetail(테스트_유저.getId(), 테스트_보상.getNo());
         //then
         Assertions.assertEquals(보상_지급.getPoint(), 100);
         Assertions.assertEquals(보상_지급.getUserId(), 테스트_유저.getId());

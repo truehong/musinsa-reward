@@ -1,5 +1,7 @@
 package com.musinsa.demo.service;
 
+import com.musinsa.demo.common.exception.RewardNotFoundException;
+import com.musinsa.demo.common.exception.UserNotFoundException;
 import com.musinsa.demo.domain.Point;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.RewardPublish;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,11 +27,11 @@ public class RewardSearchService {
     private final RewardQueueService rewardQueueService;
     private final RewardHistoryRepository rewardHistoryRepository;
 
-    public RewardResponseDto getDetails(String userId, Long rewardNo) {
+    public RewardResponseDto getDetail(String userId, Long rewardNo) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new UserNotFoundException(userId));
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardNo)));
         Optional<RewardPublish> rewardPublish = rewardHistoryRepository.findTopByUserAndRewardOrderById(user, reward);
         Point point = rewardPublish.map((RewardPublish::getPoint)).orElse(new Point());
         Long rank = rewardQueueService.getOrder(reward, user);
@@ -35,7 +39,15 @@ public class RewardSearchService {
                 .builder()
                 .userId(userId)
                 .rank(rank)
+                .rewardNo(rewardNo)
                 .point(point.getAmount())
                 .build();
+    }
+
+    public List<RewardResponseDto> getDetailsBy(Long rewardNo, LocalDate localDate) {
+        Reward reward = rewardRepository.findById(rewardNo)
+                .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardNo)));
+        List<RewardPublish> publishes = rewardHistoryRepository.findAllByRewardAndRegisterDateOrderByRegisterDateDesc(reward, LocalDate.now());
+        return RewardResponseDto.from(publishes);
     }
 }

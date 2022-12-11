@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class RewardRequestDto {
-    String userId;
-    Long rewardNo;
+    private String userId;
+    private Long rewardNo;
 }
