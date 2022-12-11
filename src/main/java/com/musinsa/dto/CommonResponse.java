@@ -1,9 +1,5 @@
 package com.musinsa.dto;
 
-import org.springframework.http.HttpStatus;
-
-import javax.net.ssl.SSLEngineResult;
-
 public class CommonResponse <T>{
     private Integer code;
     private String message;

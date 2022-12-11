@@ -8,6 +8,10 @@ import com.musinsa.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @SpringBootTest
 public abstract class AbstractRewardReceiveServiceTest {
     @Autowired
@@ -20,6 +24,17 @@ public abstract class AbstractRewardReceiveServiceTest {
         User user = User.builder()
                 .id(id).build();
         return userRepository.save(user);
+    }
+
+    protected List<User> 다중_유저_생성(Integer userCount, String idPattern) {
+
+        List<User> users = IntStream.range(1, userCount + 1)
+                .mapToObj(value ->
+                        User.builder()
+                                .id(idPattern + value).build())
+                .collect(Collectors.toList());
+
+        return userRepository.saveAll(users);
     }
 
     protected Reward 보상_생성() {

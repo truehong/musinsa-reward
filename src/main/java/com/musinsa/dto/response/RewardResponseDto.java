@@ -9,4 +9,5 @@ public class RewardResponseDto {
     private String userId;
     private Integer point;
     private Long rewardNo;
+    private Long rank;
 }

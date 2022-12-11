@@ -4,33 +4,37 @@ import com.musinsa.demo.domain.Point;
 import com.musinsa.demo.domain.Reward;
 import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
-import com.musinsa.dto.response.RewardResponseDto;
+import com.musinsa.demo.repository.RewardHistoryRepository;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
+import com.musinsa.dto.response.RewardResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class RewardServiceImpl implements ReceiveService {
+@Transactional(readOnly = true)
+public class RewardSearchService {
     private final RewardRepository rewardRepository;
     private final UserRepository userRepository;
-    private final PointCalculationService pointCalculationService;
-    @Override
-    public RewardResponseDto receive(String userId, Long rewardNo) {
-        User user =  userRepository.findById(userId)
+    private final RewardQueueService rewardQueueService;
+    private final RewardHistoryRepository rewardHistoryRepository;
+
+    public RewardResponseDto getDetails(String userId, Long rewardNo) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException());
         Reward reward = rewardRepository.findById(rewardNo)
-                .orElseThrow(()-> new RuntimeException()); // todo : exception 생성
-        Point point = pointCalculationService.calculatePointAmount(reward, user);
-        RewardPublish rewardPublish = new RewardPublish(user, point);
-        reward.publish(rewardPublish);
-        rewardRepository.save(reward);
+                .orElseThrow(() -> new RuntimeException());
+        Optional<RewardPublish> rewardPublish = rewardHistoryRepository.findTopByUserAndRewardOrderById(user, reward);
+        Point point = rewardPublish.map((RewardPublish::getPoint)).orElse(new Point());
+        Long rank = rewardQueueService.getOrder(reward, user);
         return RewardResponseDto
                 .builder()
                 .userId(userId)
+                .rank(rank)
                 .point(point.getAmount())
                 .build();
     }
