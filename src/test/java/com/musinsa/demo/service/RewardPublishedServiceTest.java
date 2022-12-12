@@ -12,8 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.lang.reflect.Executable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -32,7 +36,7 @@ public class RewardPublishedServiceTest extends AbstractRewardReceiveServiceTest
     RedisTemplate redisTemplate;
 
     @Test
-    @DisplayName("유저의 보상 발행 테스트(30개요청)-하루에 10개만 발행 가능")
+    @DisplayName("10명이 넘으면 더이상 지급되지 않는다.")
     void userRewardPublishedTest() throws InterruptedException {
         final int SCHEDULER_EXECUTION_TIME = 5000;
         final int USER_COUNT = 30;
@@ -41,7 +45,7 @@ public class RewardPublishedServiceTest extends AbstractRewardReceiveServiceTest
         List<User> users = 다중_유저_생성(USER_COUNT);
         Reward 테스트_보상 = 보상_생성();
 
-        // when
+        // when - 병렬 스트림 실행
         users.stream()
                 .parallel()
                 .forEach(v -> {
@@ -56,40 +60,26 @@ public class RewardPublishedServiceTest extends AbstractRewardReceiveServiceTest
     }
 
     @Test
-    @DisplayName("유저의 보상 발행 테스트(동일 유저 요청)-하루에 1건만 발행 가능")
+    @DisplayName("한 사용자는 같은날 하루만 발급 가능")
     void sameUserRewardPublishedTest() throws InterruptedException {
-        final int REWARD_LIMIT = 10;
-        final int SCHEDULER_EXECUTION_TIME = 5000;
-        final int REQUEST_USER_COUNT = 2;
+        final int numberOfThreads = 2;
+        final int SCHEDULER_EXECUTION_TIME = 2000;
         // given
         User 유저_1 = 유저_생성();
-        User 유저_2 = 유저_생성();
         Reward 테스트_보상 = 보상_생성();
 
-        // when - 반복 요청 : redis set 자료형 으로 반복 요청 시에도 하나만 전달됨
-        rewardPublishService.register(유저_1.getId(), 테스트_보상.getNo());
-        rewardPublishService.register(유저_1.getId(), 테스트_보상.getNo());
-        rewardPublishService.register(유저_2.getId(), 테스트_보상.getNo());
-        rewardPublishService.register(유저_2.getId(), 테스트_보상.getNo());
-        rewardPublishService.register(유저_1.getId(), 테스트_보상.getNo());
-
-        Thread.sleep(SCHEDULER_EXECUTION_TIME);
-        // when - 중복 요청 : 중복 에러 발생
-        Throwable 중복_요청_유저_1 = catchThrowable(() -> rewardPublishService.register(유저_1.getId(), 테스트_보상.getNo()));
-        Throwable 중복_요청_유저_2 = catchThrowable(() -> rewardPublishService.register(유저_2.getId(), 테스트_보상.getNo()));
-
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            service.submit(() -> {
+                rewardPublishService.register(유저_1.getId(), 테스트_보상.getNo());
+                latch.countDown();
+            });
+        }
+        latch.await();
         Thread.sleep(SCHEDULER_EXECUTION_TIME);
 
-
-        // then
-        assertThat(중복_요청_유저_1).isInstanceOf(RewardServiceException.class);
-        assertThat(중복_요청_유저_2).isInstanceOf(RewardServiceException.class);
-        assertThat(중복_요청_유저_1).withFailMessage(ServiceErrorType.USER_DUPLICATE_REGISTER.getMessage());
-        assertThat(중복_요청_유저_2).withFailMessage(ServiceErrorType.USER_DUPLICATE_REGISTER.getMessage());
-
-        List<RewardPublish> publishes = rewardHistoryRepository.findAllByRewardAndRegisterDate(테스트_보상, LocalDate.now());
-        assertThat(publishes.size()).isEqualTo(2);
-        Reward reward = rewardRepository.findById(테스트_보상.getNo()).get();
-        assertThat(reward.getStock().getRemains()).isEqualTo(REWARD_LIMIT - REQUEST_USER_COUNT);
+        List<RewardPublish> publishes = rewardHistoryRepository.findAllByUserAndRewardAndRegisterDate(유저_1,테스트_보상, LocalDate.now());
+        assertThat(publishes.size()).isEqualTo(1);
     }
 }
