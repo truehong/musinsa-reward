@@ -33,6 +33,8 @@ test {
 ### 오브젝트 관계도 
 ![entity 관계 (1)](https://user-images.githubusercontent.com/40927029/207064864-dd242268-df2e-4567-a68b-0d2b6aac6da6.jpg)
 
+![code descript1](https://user-images.githubusercontent.com/40927029/207068275-dd339bff-a2e1-4f9a-8147-63cf068aed02.jpg)
+
 
 
 ## 4.가산점 부여 항목 구현 방식
