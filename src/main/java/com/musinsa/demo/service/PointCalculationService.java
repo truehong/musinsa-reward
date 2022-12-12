@@ -1,7 +1,7 @@
 package com.musinsa.demo.service;
 
 import com.musinsa.demo.domain.Point;
-import com.musinsa.demo.domain.Reward;
+import com.musinsa.demo.domain.RewardHistory;
 import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.repository.RewardHistoryRepository;
@@ -15,9 +15,9 @@ import java.util.Optional;
 public class PointCalculationService {
     private final RewardHistoryRepository rewardHistoryRepository;
 
-    public Point calculatePointAmount(Reward reward, User user) {
-        Optional<RewardPublish> rewardPublish = rewardHistoryRepository.findTopByUserAndRewardOrderById(user, reward);
-        Point point = rewardPublish.map((RewardPublish::getPoint)).orElse(new Point());
+    public Point calculatePointAmount(RewardPublish publish, User user) {
+        Optional<RewardHistory> rewardPublish = rewardHistoryRepository.findTopByUserAndRewardPublishOrderByRegisterDate(user, publish);
+        Point point = rewardPublish.map((RewardHistory::getPoint)).orElse(new Point());
         if (point.getAmount() < 1000) {
             point.initialize();
         }

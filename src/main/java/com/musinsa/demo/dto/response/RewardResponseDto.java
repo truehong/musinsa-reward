@@ -1,6 +1,6 @@
 package com.musinsa.demo.dto.response;
 
-import com.musinsa.demo.domain.RewardPublish;
+import com.musinsa.demo.domain.RewardHistory;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,10 +15,10 @@ public class RewardResponseDto {
     private Long rewardNo;
     private Long rank;
 
-    public static List<RewardResponseDto> from(List<RewardPublish> publishes) {
+    public static List<RewardResponseDto> from(List<RewardHistory> publishes) {
         return publishes.stream().map(publish -> RewardResponseDto.builder()
                 .userId(publish.getUser().getId())
-                .rewardNo(publish.getReward().getNo())
+                .rewardNo(publish.getRewardPublish().getRewardPublishNo())
                 .point(publish.getPoint().getAmount())
                 .build())
                 .collect(Collectors.toList());

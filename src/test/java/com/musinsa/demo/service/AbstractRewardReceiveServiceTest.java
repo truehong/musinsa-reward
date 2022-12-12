@@ -1,9 +1,12 @@
 package com.musinsa.demo.service;
 
+import com.musinsa.demo.common.enums.Status;
 import com.musinsa.demo.domain.Reward;
+import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.Stock;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.repository.RewardHistoryRepository;
+import com.musinsa.demo.repository.RewardPublishRepository;
 import com.musinsa.demo.repository.RewardRepository;
 import com.musinsa.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ public abstract class AbstractRewardReceiveServiceTest {
     @Autowired
     protected RewardRepository rewardRepository;
 
+    @Autowired
+    protected RewardPublishRepository rewardPublishRepository;
     @Autowired
     protected RewardHistoryRepository rewardHistoryRepository;
 
@@ -44,7 +49,6 @@ public abstract class AbstractRewardReceiveServiceTest {
 
         List<User> users = IntStream.range(1, userCount + 1)
                 .mapToObj(value ->
-
                         User.builder()
                                 .id(String.valueOf(index.getAndAdd(1))).build())
                 .collect(Collectors.toList());
@@ -52,16 +56,19 @@ public abstract class AbstractRewardReceiveServiceTest {
         return userRepository.saveAll(users);
     }
 
-    protected Reward 보상_생성() {
-        Stock stock = Stock.builder()
-                .limit(10)
-                .remains(10)
+    protected RewardPublish 보상_생성() {
+        Reward reward = Reward.builder()
+                .rewardStatus(Status.OPEN)
+                .title("보상 테스트")
                 .build();
-        Reward reward = Reward
+        Reward saved = rewardRepository.save(reward);
+        RewardPublish rewardPublish = RewardPublish
                 .builder()
-                .stock(stock)
+                .reward(saved)
+                .status(Status.OPEN)
+                .stock(new Stock(new AtomicInteger(10)))
                 .build();
-        return rewardRepository.save(reward);
+        return rewardPublishRepository.save(rewardPublish);
     }
 
 }

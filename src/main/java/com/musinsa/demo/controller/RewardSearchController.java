@@ -1,6 +1,7 @@
 package com.musinsa.demo.controller;
 
 import com.musinsa.demo.dto.CommonResponse;
+import com.musinsa.demo.dto.request.RewardSearchRequestDto;
 import com.musinsa.demo.dto.response.RewardResponseDto;
 import com.musinsa.demo.service.RewardSearchService;
 import io.swagger.annotations.ApiOperation;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,16 +23,15 @@ import java.util.List;
 public class RewardSearchController {
     private final RewardSearchService rewardSearchService;
 
-    @GetMapping("/{rewardNo}")
+    @GetMapping("/{rewardPublishNo}")
     @ApiOperation(value = "당일 보상 발급 리스트 조회 API")
     @ApiResponses({
             @ApiResponse(code = 0, message = "조회 성공"),
             @ApiResponse(code = 404, message = "요청 값에 대한 데이터가 존재 하지 않을 경우")
     })
     @ResponseStatus(HttpStatus.OK)
-    public CommonResponse<RewardResponseDto> getPublishedRewardTodayList(@ApiParam(value = "rewardNo", example = "1", required = true)
-                                                                         @RequestParam("rewardNo") Long rewardNo) {
-        List<RewardResponseDto> responses = rewardSearchService.getDetailsBy(rewardNo, LocalDate.now());
+    public CommonResponse<RewardResponseDto> getPublishedRewardHistory(@PathVariable Long rewardPublishNo, @RequestBody RewardSearchRequestDto requestDto) {
+        List<RewardResponseDto> responses = rewardSearchService.getDetailsBy(rewardPublishNo, LocalDate.now(), Sort.Direction.ASC);
         return new CommonResponse(responses);
     }
 

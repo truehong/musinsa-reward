@@ -1,6 +1,6 @@
 package com.musinsa.demo.service;
 
-import com.musinsa.demo.domain.Reward;
+import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.event.Events;
 import com.musinsa.demo.event.RewardPublishedEvent;
@@ -23,30 +23,30 @@ public class RewardQueueService {
     private static final long LAST_INDEX = 1;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void addQueue(Reward reward, User user, long timestamp) {
-        redisTemplate.opsForZSet().add(String.valueOf(reward.getNo()), user.getId(), timestamp);
+    public void addQueue(RewardPublish rewardPublish, User user, long timestamp) {
+        redisTemplate.opsForZSet().add(String.valueOf(rewardPublish.getRewardPublishNo()), user.getId(), timestamp);
         log.info("added to queue - {} ({} seconds)", user.getId(), timestamp);
     }
 
-    public void publishAll(List<Reward> rewards) {
+    public void publishAll(List<RewardPublish> rewardPublishes) {
         final long start = FIRST_ELEMENT;
         final long end = PUBLISH_SIZE - LAST_INDEX;
 
-        for (Reward reward : rewards) {
-            Set<Object> queue = redisTemplate.opsForZSet().range(String.valueOf(reward.getNo()), start, end);
-            for (Object value : queue) {
+        for (RewardPublish publish : rewardPublishes) {
+            Set<Object> users = redisTemplate.opsForZSet().range(String.valueOf(publish.getRewardPublishNo()), start, end);
+            for (Object value : users) {
                 String userId = String.valueOf(value);
-                log.info("user reward published - {} ({} reward)", userId, reward.getNo());
-                log.info("user thread - {}", Thread.currentThread());
-                Events.raise(new RewardPublishedEvent(userId, reward.getNo()));
-                log.info("event after thread - {}", Thread.currentThread());
-                redisTemplate.opsForZSet().remove(String.valueOf(reward.getNo()), userId);
+                log.info("user reward register for queue - {} ({} reward)", userId, publish.getRewardPublishNo());
+                log.info("user thread - {}, timeStamp - {}", Thread.currentThread(), System.currentTimeMillis());
+                redisTemplate.opsForZSet().remove(String.valueOf(publish.getRewardPublishNo()), userId);
+                Events.raise(new RewardPublishedEvent(userId, publish.getRewardPublishNo()));
             }
         }
     }
 
-    public Long getOrder(Reward reward, User user) {
-        Long rank = redisTemplate.opsForZSet().rank(String.valueOf(reward.getNo()), user.getId());
+
+    public Long getOrder(RewardPublish rewardPublish, User user) {
+        Long rank = redisTemplate.opsForZSet().rank(String.valueOf(rewardPublish.getRewardPublishNo()), user.getId());
         return rank;
     }
 }

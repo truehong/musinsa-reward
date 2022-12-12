@@ -1,6 +1,6 @@
 package com.musinsa.demo.service;
 
-import com.musinsa.demo.domain.Reward;
+import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("local")
-class RewardQueueServiceTest extends AbstractRewardReceiveServiceTest {
+class RewardPublishQueueServiceTest extends AbstractRewardReceiveServiceTest {
     @Autowired
     RewardQueueService rewardQueueService;
 
@@ -30,16 +30,16 @@ class RewardQueueServiceTest extends AbstractRewardReceiveServiceTest {
         User user1 = 유저_생성();
         User user2 = 유저_생성();
         User user3 = 유저_생성();
-        Reward reward = 보상_생성();
+        RewardPublish rewardPublish = 보상_생성();
 
         // when
-        rewardQueueService.addQueue(reward, user1, System.currentTimeMillis());
-        rewardQueueService.addQueue(reward, user2, System.currentTimeMillis());
-        rewardQueueService.addQueue(reward, user3, System.currentTimeMillis());
+        rewardQueueService.addQueue(rewardPublish, user1, System.currentTimeMillis());
+        rewardQueueService.addQueue(rewardPublish, user2, System.currentTimeMillis());
+        rewardQueueService.addQueue(rewardPublish, user3, System.currentTimeMillis());
 
-        long orderOfUser1 = rewardQueueService.getOrder(reward, user1);
-        long orderOfUser2 = rewardQueueService.getOrder(reward, user2);
-        long orderOfUser3 = rewardQueueService.getOrder(reward, user3);
+        long orderOfUser1 = rewardQueueService.getOrder(rewardPublish, user1);
+        long orderOfUser2 = rewardQueueService.getOrder(rewardPublish, user2);
+        long orderOfUser3 = rewardQueueService.getOrder(rewardPublish, user3);
 
         // then
         assertThat(orderOfUser1).isEqualTo(0);

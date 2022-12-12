@@ -1,66 +1,34 @@
 package com.musinsa.demo.domain;
 
-import com.musinsa.demo.common.exception.ServiceErrorType;
-import com.musinsa.demo.common.exception.RewardServiceException;
+import com.musinsa.demo.common.AbstractBaseRegisterDate;
+import com.musinsa.demo.common.enums.Status;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Embedded;
-import javax.persistence.OneToMany;
-import javax.persistence.GenerationType;
-import java.time.LocalDate;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Reward {
+public class Reward extends AbstractBaseRegisterDate {
     @Id
     @Column(name = "reward_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long no;
+    private Long rewardNo;
 
-    @Embedded
-    @Column(name = "stock")
-    private Stock stock;
+    @Column(name = "title")
+    private String title;
 
-    @OneToMany(mappedBy = "reward",  cascade = { PERSIST , MERGE})
-    private final List<RewardPublish> histories = new ArrayList<>();
+    @Column(name = "cron_expression")
+    private String cronExpression;
 
-    public Reward(Stock stock){
-        this.stock = stock;
-    }
+    @Column(name = "reward_status")
+    private Status rewardStatus;
 
-    public void publish(RewardPublish rewardPublish) {
-        updateStock();
-        add(rewardPublish);
-    }
-
-    private void add(RewardPublish rewardPublish){
-        checkDuplication(rewardPublish.getUser());
-        rewardPublish.setReward(this);
-        this.histories.add(rewardPublish);
-    }
-
-    private void updateStock() {
-        if (stock.getRemains() == 0) {
-            throw new RewardServiceException(ServiceErrorType.OUT_OF_REWARD_STOCK);
-        }
-        stock = stock.decrease();
-    }
-
-    public void checkDuplication(User user) {
-        boolean HistoryExists = histories.stream()
-                .anyMatch(v -> v.getUser() == user && LocalDate.now().equals(v.getRegisterDate()));
-        if (HistoryExists) throw new RewardServiceException(ServiceErrorType.USER_DUPLICATE_REGISTER);
-    }
+    @OneToMany(mappedBy = "reward")
+    private List<RewardPublish> rewardPublishList = new ArrayList<>();
 }

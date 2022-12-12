@@ -1,32 +1,33 @@
 package com.musinsa.demo.domain;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Embeddable
 @Getter
 @Builder
-@EqualsAndHashCode
 public class Stock {
     @Column(name = "stock")
-    private int limit;
-    private int remains;
+    private AtomicInteger remains;
 
 
     protected Stock() {
     }
 
-    Stock(int limit, int remains) {
-        this.limit = limit;
+    public Stock(AtomicInteger remains) {
         this.remains = remains;
     }
 
+    public boolean end() {
+        return remains.intValue() == 0;
+    }
+
     public Stock decrease() {
-        this.remains -=  1;
-        return new Stock(this.getLimit(), remains);
+        this.remains.decrementAndGet();
+        return new Stock(new AtomicInteger(remains.get()));
     }
 }
