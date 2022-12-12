@@ -7,6 +7,7 @@ import com.musinsa.demo.domain.User;
 import com.musinsa.demo.dto.response.RewardResponseDto;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +30,9 @@ class RewardPublishReceiveServiceTest extends AbstractRewardReceiveServiceTest {
     @Autowired
     RewardSearchService rewardSearchService;
 
+    @Test
     @Description("유저 포인트 생성 확인")
+    @Disabled("Disabled until point service is up!")
     void userRewardRegisterTest() throws InterruptedException {
         final int SCHEDULER_EXECUTION_TIME = 5000;
         // given
@@ -44,6 +47,8 @@ class RewardPublishReceiveServiceTest extends AbstractRewardReceiveServiceTest {
         Assertions.assertEquals(보상_지급.getUserId(), 테스트_유저.getId());
     }
 
+    @Test
+    @Disabled("Disabled until reward service is up!")
     void userRewardRegisterExceptionTest() {
         // given
         User 테스트_유저 = 유저_생성();
@@ -56,6 +61,8 @@ class RewardPublishReceiveServiceTest extends AbstractRewardReceiveServiceTest {
         assertThat(보상_지급_한번더).withFailMessage(ServiceErrorType.USER_DUPLICATE_REGISTER.getMessage());
     }
 
+    @Test
+    @Disabled("Disabled until reward service is up!")
     void rewardOutOfStockExceptionTest() {
         // given
         RewardPublish 테스트_보상 = 보상_생성();
