@@ -26,6 +26,7 @@ public class RewardEventScheduler {
     private final RewardPublishRepository rewardPublishRepository;
     private final RewardRepository rewardRepository;
 
+    // todo : create cache server
     @Scheduled(fixedDelay = 1000)
     private void rewardPublishScheduler() {
         log.info("reward event scheduler executed [ at {} ] ", LocalDateTime.now());
@@ -35,6 +36,7 @@ public class RewardEventScheduler {
         }
     }
 
+    // todo : create cache server
     @Scheduled(cron = "0 0 * * * *")
     private void rewardOpenScheduler() {
         log.info("reward event scheduler executed [ at {} ] ", LocalDateTime.now());

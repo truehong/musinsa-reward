@@ -48,5 +48,4 @@ public class RewardSearchController {
         RewardResponseDto response = rewardSearchService.getDetail(userId, rewardPublishNo);
         return new CommonResponse(response);
     }
-
 }

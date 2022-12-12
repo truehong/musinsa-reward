@@ -14,7 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PointCalculationService {
     private final RewardHistoryRepository rewardHistoryRepository;
-
     public Point calculatePointAmount(RewardPublish publish, User user) {
         Optional<RewardHistory> rewardPublish = rewardHistoryRepository.findTopByUserAndRewardPublishOrderByRegisterDate(user, publish);
         Point point = rewardPublish.map((RewardHistory::getPoint)).orElse(new Point());

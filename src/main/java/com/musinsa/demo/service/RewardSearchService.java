@@ -49,7 +49,7 @@ public class RewardSearchService {
     public List<RewardResponseDto> getSearchRewardList(Long rewardPublishNo, LocalDate localDate, Sort.Direction direction) {
         RewardPublish rewardPublish = rewardPublishRepository.findById(rewardPublishNo)
                 .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardPublishNo)));
-        Sort sort = Sort.by(direction);
+        Sort sort = Sort.by(direction, "historyId");
         List<RewardHistory> publishes = rewardHistoryRepository.findAllByRewardPublishAndRegisterDate(rewardPublish,localDate, sort);
         return RewardResponseDto.from(publishes);
     }
