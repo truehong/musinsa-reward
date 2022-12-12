@@ -21,11 +21,11 @@ public class RewardController {
     @ApiOperation(value = "유저의 보상 요청 API", notes = "요청 결과만 확인 가능 합니다.\n 발급 내역은 보상 발급 내역 조회 API를 통해 확인 가능합니다.")
     @ApiResponses({
             @ApiResponse(code = 0, message = "요청 성공"),
-            @ApiResponse(code = 10002, message = "등록 되지 않은 보상 이벤트 ID 로 요청 시 실패")
+            @ApiResponse(code = 404, message = "등록 되지 않은 보상 이벤트 ID 로 요청 시 실패")
     })
     @ResponseStatus(HttpStatus.OK)
     public CommonResponse<Void> createRewardRequest(@RequestBody RewardRequestDto requestDto) {
-        rewardPublishService.register(requestDto.getUserId(), requestDto.getRewardNo());
+        rewardPublishService.register(requestDto.getUserId(), requestDto.getRewardPublishNo());
         return CommonResponse.ok();
     }
 }

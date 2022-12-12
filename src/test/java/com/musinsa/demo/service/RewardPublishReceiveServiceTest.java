@@ -1,12 +1,12 @@
 package com.musinsa.demo.service;
 
-import com.musinsa.demo.common.exception.ServiceErrorType;
 import com.musinsa.demo.common.exception.RewardServiceException;
+import com.musinsa.demo.common.exception.ServiceErrorType;
 import com.musinsa.demo.domain.RewardPublish;
 import com.musinsa.demo.domain.User;
 import com.musinsa.demo.dto.response.RewardResponseDto;
+import jdk.jfr.Description;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,23 +29,21 @@ class RewardPublishReceiveServiceTest extends AbstractRewardReceiveServiceTest {
     @Autowired
     RewardSearchService rewardSearchService;
 
-
-    @Test
-    @DisplayName("유저의 보상 등록 테스트")
-    void userRewardRegisterTest() {
+    @Description("유저 포인트 생성 확인")
+    void userRewardRegisterTest() throws InterruptedException {
+        final int SCHEDULER_EXECUTION_TIME = 5000;
         // given
         User 테스트_유저 = 유저_생성();
         RewardPublish 테스트_보상 = 보상_생성();
         // when
         rewardPublishService.register(테스트_유저.getId(), 테스트_보상.getRewardPublishNo());
+        Thread.sleep(SCHEDULER_EXECUTION_TIME);
         RewardResponseDto 보상_지급 = rewardSearchService.getDetail(테스트_유저.getId(), 테스트_보상.getRewardPublishNo());
         //then
         Assertions.assertEquals(보상_지급.getPoint(), 100);
         Assertions.assertEquals(보상_지급.getUserId(), 테스트_유저.getId());
     }
 
-    @Test
-    @DisplayName("같은 유저가 두번 등록시 에러 발생")
     void userRewardRegisterExceptionTest() {
         // given
         User 테스트_유저 = 유저_생성();
@@ -58,8 +56,6 @@ class RewardPublishReceiveServiceTest extends AbstractRewardReceiveServiceTest {
         assertThat(보상_지급_한번더).withFailMessage(ServiceErrorType.USER_DUPLICATE_REGISTER.getMessage());
     }
 
-    @Test
-    @DisplayName("하루에 10건 이상 보상 신청 시 에러 발생")
     void rewardOutOfStockExceptionTest() {
         // given
         RewardPublish 테스트_보상 = 보상_생성();

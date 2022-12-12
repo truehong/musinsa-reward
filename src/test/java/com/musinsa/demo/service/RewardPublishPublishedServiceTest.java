@@ -34,7 +34,7 @@ public class RewardPublishPublishedServiceTest extends AbstractRewardReceiveServ
     @Test
     @DisplayName("10명이 넘으면 더이상 지급되지 않는다.")
     void userRewardPublishedTest() throws InterruptedException {
-        final int numberOfThreads = 2;
+        final int NUMBER_OF_THREAD = 5;
         final int SCHEDULER_EXECUTION_TIME = 5000;
         final int USER_COUNT = 30;
         final int LIMIT_REWARDS_COUNT = 10;
@@ -42,8 +42,8 @@ public class RewardPublishPublishedServiceTest extends AbstractRewardReceiveServ
         RewardPublish 테스트_보상 = 보상_생성();
 
         ExecutorService service = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-        for (int i = 0; i < numberOfThreads; i++) {
+        CountDownLatch latch = new CountDownLatch(NUMBER_OF_THREAD);
+        for (int i = 0; i < NUMBER_OF_THREAD; i++) {
             service.submit(() -> {
                 List<User> users = 다중_유저_생성(USER_COUNT);
                 users.stream()

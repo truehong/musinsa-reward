@@ -40,12 +40,13 @@ public class RewardSearchService {
                 .builder()
                 .userId(userId)
                 .rank(rank)
-                .rewardNo(rewardPublish.getRewardPublishNo())
+                .rewardPublishNo(rewardPublish.getRewardPublishNo())
                 .point(point.getAmount())
+                .registerDate(rewardHistory.get().getRegisterDate())
                 .build();
     }
 
-    public List<RewardResponseDto> getDetailsBy(Long rewardPublishNo, LocalDate localDate, Sort.Direction direction) {
+    public List<RewardResponseDto> getSearchRewardList(Long rewardPublishNo, LocalDate localDate, Sort.Direction direction) {
         RewardPublish rewardPublish = rewardPublishRepository.findById(rewardPublishNo)
                 .orElseThrow(() -> new RewardNotFoundException(String.valueOf(rewardPublishNo)));
         Sort sort = Sort.by(direction);
